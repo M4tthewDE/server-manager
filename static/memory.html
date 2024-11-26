@@ -1,0 +1,22 @@
+<h2>Memory</h2>
+<div class="memory-container">
+    <span>Total:</span><span class="memory-value">{{.Total}}</span>
+    <hr>
+    <span>Free:</span><span class="memory-value">{{.Free}}</span>
+    <hr>
+    <span>Available:</span><span class="memory-value">{{.Available}}</span>
+</div>
+
+<style>
+    .memory-container {
+        display: flex;
+        justify-content: space-between;
+        flex-flow: wrap;
+        max-width: 15em;
+    }
+
+    .memory-container hr {
+        width: 100%;
+        border: none;
+    }
+</style>
