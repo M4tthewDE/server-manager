@@ -1,36 +1,26 @@
 package internal
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 
-	"github.com/m4tthewde/server-manager/internal/memory"
-	"github.com/m4tthewde/server-manager/internal/template"
+	"github.com/m4tthewde/server-manager/internal/status"
 )
 
 func Run() error {
 	http.HandleFunc("/{$}", root)
-	http.HandleFunc("/memory", mem)
+	http.HandleFunc("/status", status.Stat)
 	http.HandleFunc("/favicon.ico", favicon)
 	http.HandleFunc("/htmx.min.js", htmx)
 
 	return http.ListenAndServe(":8080", nil)
 }
 
+var rootTemplate = template.Must(template.ParseFiles("static/root.html"))
+
 func root(w http.ResponseWriter, r *http.Request) {
-	err := template.RootTemplate.Execute(w, nil)
-	if err != nil {
-		log.Println(err)
-	}
-}
-
-func mem(w http.ResponseWriter, r *http.Request) {
-	memory, err := memory.FetchMemory()
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = template.MemoryTemplate.Execute(w, memory)
+	err := rootTemplate.Execute(w, nil)
 	if err != nil {
 		log.Println(err)
 	}
