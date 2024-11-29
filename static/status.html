@@ -1,10 +1,11 @@
 <h3>Memory</h2>
-<div class="memory-container">
-    <span>Total:</span><span class="memory-value">{{.Memory.Total}}</span>
-    <hr>
-    <span>Free:</span><span class="memory-value">{{.Memory.Free}}</span>
-    <hr>
-    <span>Available:</span><span class="memory-value">{{.Memory.Available}}</span>
+<div class="memory-grid">
+    <span>Total:</span>
+    <span>{{.Memory.Total}}</span>
+    <span>Free:</span>
+    <span>{{.Memory.Free}}</span>
+    <span>Available:</span>
+    <span>{{.Memory.Available}}</span>
 </div>
 
 <h3>Docker</h3>
@@ -49,16 +50,10 @@
 </div>
 
 <style>
-    .memory-container {
-        display: flex;
-        justify-content: space-between;
-        flex-flow: wrap;
+    .memory-grid {
+        display: grid;
+        grid-template-columns: auto auto;
         max-width: 15em;
-    }
-
-    .memory-container hr {
-        width: 100%;
-        border: none;
     }
 
     .docker-version {
