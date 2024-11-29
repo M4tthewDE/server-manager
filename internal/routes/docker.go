@@ -68,7 +68,7 @@ func ContainerNew(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", 302)
 	}
 
-	http.Redirect(w, r, "/", 302)
+	// TODO: redirect to details page of container
 }
 
 func ContainerStart(w http.ResponseWriter, r *http.Request) {
@@ -104,5 +104,5 @@ func ContainerRemove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/", 302)
+	w.Header().Add("HX-Location", "/")
 }
