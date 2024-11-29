@@ -1,0 +1,26 @@
+<div class="docker-container-grid">
+    <span class="label">Id:</span>
+    <span>{{slice .Id 0 10}}</span>
+    <span class="label">Image:</span>
+    <span>{{.Image}}</span>
+    <span class="label">Command:</span>
+    <span>{{.Command}}</span>
+    <span class="label">Created:</span>
+    <span>{{.Created}}</span>
+    <span class="label">Status:</span>
+    <span>{{.Status}}</span>
+    <span class="label">Name:</span>
+    <span>{{.Name}}</span>
+</div>
+
+<style>
+    .docker-container-grid {
+        display: grid;
+        grid-template-columns: auto auto;
+        max-width: 30em;
+    }
+
+    .docker-container-grid .label {
+        font-weight: bold;
+    }
+</style>

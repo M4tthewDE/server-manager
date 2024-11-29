@@ -9,7 +9,24 @@ import (
 )
 
 var detailsTempl = template.Must(template.ParseFiles("static/docker/details.html"))
+var containerDetailsTempl = template.Must(template.ParseFiles("static/docker/containerDetails.html"))
 var newTempl = template.Must(template.ParseFiles("static/docker/new.html"))
+
+func Details(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	err := detailsTempl.Execute(w, id)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func ContainerForm(w http.ResponseWriter, r *http.Request) {
+	err := newTempl.Execute(w, nil)
+	if err != nil {
+		log.Println(err)
+	}
+}
 
 func ContainerDetails(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
@@ -20,14 +37,7 @@ func ContainerDetails(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", 302)
 	}
 
-	err = detailsTempl.Execute(w, container)
-	if err != nil {
-		log.Println(err)
-	}
-}
-
-func ContainerForm(w http.ResponseWriter, r *http.Request) {
-	err := newTempl.Execute(w, nil)
+	err = containerDetailsTempl.Execute(w, container)
 	if err != nil {
 		log.Println(err)
 	}

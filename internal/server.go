@@ -11,7 +11,8 @@ import (
 func Run() error {
 	http.HandleFunc("GET /{$}", root)
 	http.HandleFunc("GET /status", routes.Stat)
-	http.HandleFunc("GET /docker/{id}", routes.ContainerDetails)
+	http.HandleFunc("GET /docker/{id}", routes.Details)
+	http.HandleFunc("GET /docker/{id}/containerDetails", routes.ContainerDetails)
 	http.HandleFunc("GET /docker/new", routes.ContainerForm)
 	http.HandleFunc("POST /docker/new", routes.ContainerNew)
 	http.HandleFunc("POST /docker/{id}/start", routes.ContainerStart)

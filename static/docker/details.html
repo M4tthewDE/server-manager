@@ -1,45 +1,20 @@
 <!DOCTYPE html>
+<script src="../htmx.min.js"></script>
 
 <body>
     <h1>Server Manager</h1>
     <h2>Container Details</h2>
-    <!-- TODO these should auto update -->
-    <div class="docker-container-grid">
-        <span class="label">Id:</span>
-        <span>{{slice .Id 0 10}}</span>
-        <span class="label">Image:</span>
-        <span>{{.Image}}</span>
-        <span class="label">Command:</span>
-        <span>{{.Command}}</span>
-        <span class="label">Created:</span>
-        <span>{{.Created}}</span>
-        <span class="label">Status:</span>
-        <span>{{.Status}}</span>
-        <span class="label">Name:</span>
-        <span>{{.Name}}</span>
-    </div>
+    <div hx-get="/docker/{{.}}/containerDetails" hx-trigger="load, every 5s"></div>
     <h2>Actions</h2>
     <div>
-        <form action="/docker/{{.Id}}/start" method="post">
+        <form action="/docker/{{.}}/start" method="post">
             <input type="submit" value="Start" />
         </form>
-        <form action="/docker/{{.Id}}/stop" method="post">
+        <form action="/docker/{{.}}/stop" method="post">
             <input type="submit" value="Stop" />
         </form>
-        <form action="/docker/{{.Id}}/remove" method="post">
+        <form action="/docker/{{.}}/remove" method="post">
             <input type="submit" value="Remove" />
         </form>
     </div>
 </body>
-
-<style>
-    .docker-container-grid {
-        display: grid;
-        grid-template-columns: auto auto;
-        max-width: 30em;
-    }
-
-    .docker-container-grid .label {
-        font-weight: bold;
-    }
-</style>
