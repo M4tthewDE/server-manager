@@ -7,14 +7,9 @@
     <div hx-get="/docker/{{.}}/containerDetails" hx-trigger="load, every 5s"></div>
     <h2>Actions</h2>
     <div>
-        <form action="/docker/{{.}}/start" method="post">
-            <input type="submit" value="Start" />
-        </form>
-        <form action="/docker/{{.}}/stop" method="post">
-            <input type="submit" value="Stop" />
-        </form>
-        <form action="/docker/{{.}}/remove" method="post">
-            <input type="submit" value="Remove" />
-        </form>
+        <button hx-post="/docker/{{.}}/start" hx-target="#result-div" hx-swap="outerHTML">Start</button>
+        <button hx-post="/docker/{{.}}/stop" hx-target="#result-div" hx-swap="outerHTML">Stop</button>
+        <button hx-post="/docker/{{.}}/remove" hx-target="#result-div" hx-swap="outerHTML">Remove</button>
     </div>
+    <div id="result-div"></div>
 </body>

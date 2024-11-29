@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/m4tthewde/server-manager/internal/docker"
+	"github.com/m4tthewde/server-manager/internal/error"
+	"github.com/m4tthewde/server-manager/internal/success"
 )
 
 var detailsTempl = template.Must(template.ParseFiles("static/docker/details.html"))
@@ -74,11 +76,11 @@ func ContainerStart(w http.ResponseWriter, r *http.Request) {
 
 	err := docker.StartContainer(r.Context(), id)
 	if err != nil {
-		log.Println(err)
-		http.Redirect(w, r, "/", 302)
+		error.ShowError(w, err)
+		return
 	}
 
-	http.Redirect(w, r, "/docker/"+id, 302)
+	success.ShowSuccess(w, "")
 }
 
 func ContainerStop(w http.ResponseWriter, r *http.Request) {
@@ -86,11 +88,11 @@ func ContainerStop(w http.ResponseWriter, r *http.Request) {
 
 	err := docker.StopContainer(r.Context(), id)
 	if err != nil {
-		log.Println(err)
-		http.Redirect(w, r, "/", 302)
+		error.ShowError(w, err)
+		return
 	}
 
-	http.Redirect(w, r, "/docker/"+id, 302)
+	success.ShowSuccess(w, "")
 }
 
 func ContainerRemove(w http.ResponseWriter, r *http.Request) {
@@ -98,8 +100,8 @@ func ContainerRemove(w http.ResponseWriter, r *http.Request) {
 
 	err := docker.RemoveContainer(r.Context(), id)
 	if err != nil {
-		log.Println(err)
-		http.Redirect(w, r, "/", 302)
+		error.ShowError(w, err)
+		return
 	}
 
 	http.Redirect(w, r, "/", 302)
