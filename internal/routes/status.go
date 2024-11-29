@@ -1,25 +1,29 @@
-package status
+package routes
 
 import (
+	"context"
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/m4tthewde/server-manager/internal/docker"
+	"github.com/m4tthewde/server-manager/internal/memory"
 )
 
 var templ = template.Must(template.ParseFiles("static/status.html"))
 
 type Status struct {
-	Memory Memory
-	Docker Docker
+	Memory memory.Memory
+	Docker docker.Docker
 }
 
-func NewStatus() (*Status, error) {
-	memory, err := FetchMemory()
+func NewStatus(ctx context.Context) (*Status, error) {
+	memory, err := memory.FetchMemory()
 	if err != nil {
 		return nil, err
 	}
 
-	docker, err := FetchDocker()
+	docker, err := docker.FetchDocker(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +32,7 @@ func NewStatus() (*Status, error) {
 }
 
 func Stat(w http.ResponseWriter, r *http.Request) {
-	status, err := NewStatus()
+	status, err := NewStatus(r.Context())
 	if err != nil {
 		log.Println(err)
 	}

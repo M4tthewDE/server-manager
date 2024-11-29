@@ -10,5 +10,8 @@ func main() {
 	log.SetFlags(log.Lshortfile | log.Ldate | log.Ltime)
 	log.Println("Starting server manager")
 
-	internal.Run()
+	err := internal.Run()
+	if err != nil {
+		log.Println(err)
+	}
 }

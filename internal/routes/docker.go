@@ -1,0 +1,96 @@
+package routes
+
+import (
+	"html/template"
+	"log"
+	"net/http"
+
+	"github.com/m4tthewde/server-manager/internal/docker"
+)
+
+var detailsTempl = template.Must(template.ParseFiles("static/docker/details.html"))
+var newTempl = template.Must(template.ParseFiles("static/docker/new.html"))
+
+func ContainerDetails(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	container, err := docker.FindContainer(r.Context(), id)
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/", 302)
+	}
+
+	err = detailsTempl.Execute(w, container)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func ContainerForm(w http.ResponseWriter, r *http.Request) {
+	err := newTempl.Execute(w, nil)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func ContainerNew(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/", 302)
+	}
+
+	image := r.FormValue("image")
+	if image == "" {
+		http.Redirect(w, r, "/", 302)
+	}
+
+	version := r.FormValue("version")
+	if image == "" {
+		http.Redirect(w, r, "/", 302)
+	}
+
+	_, err = docker.CreateContainer(r.Context(), image, version)
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/", 302)
+	}
+
+	http.Redirect(w, r, "/", 302)
+}
+
+func ContainerStart(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	err := docker.StartContainer(r.Context(), id)
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/", 302)
+	}
+
+	http.Redirect(w, r, "/docker/"+id, 302)
+}
+
+func ContainerStop(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	err := docker.StopContainer(r.Context(), id)
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/", 302)
+	}
+
+	http.Redirect(w, r, "/docker/"+id, 302)
+}
+
+func ContainerRemove(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	err := docker.RemoveContainer(r.Context(), id)
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/", 302)
+	}
+
+	http.Redirect(w, r, "/", 302)
+}

@@ -5,12 +5,18 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/m4tthewde/server-manager/internal/status"
+	"github.com/m4tthewde/server-manager/internal/routes"
 )
 
 func Run() error {
-	http.HandleFunc("/{$}", root)
-	http.HandleFunc("/status", status.Stat)
+	http.HandleFunc("GET /{$}", root)
+	http.HandleFunc("GET /status", routes.Stat)
+	http.HandleFunc("GET /docker/{id}", routes.ContainerDetails)
+	http.HandleFunc("GET /docker/new", routes.ContainerForm)
+	http.HandleFunc("POST /docker/new", routes.ContainerNew)
+	http.HandleFunc("POST /docker/{id}/start", routes.ContainerStart)
+	http.HandleFunc("POST /docker/{id}/stop", routes.ContainerStop)
+	http.HandleFunc("POST /docker/{id}/remove", routes.ContainerRemove)
 
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fs)
