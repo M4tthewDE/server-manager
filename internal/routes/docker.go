@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
@@ -48,27 +49,29 @@ func ContainerDetails(w http.ResponseWriter, r *http.Request) {
 func ContainerNew(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		log.Println(err)
-		http.Redirect(w, r, "/", 302)
+		error.ShowError(w, err)
+		return
 	}
 
 	image := r.FormValue("image")
 	if image == "" {
-		http.Redirect(w, r, "/", 302)
+		error.ShowError(w, errors.New("no image provided"))
+		return
 	}
 
 	version := r.FormValue("version")
-	if image == "" {
-		http.Redirect(w, r, "/", 302)
+	if version == "" {
+		error.ShowError(w, errors.New("no version provided"))
+		return
 	}
 
-	_, err = docker.CreateContainer(r.Context(), image, version)
+	id, err := docker.CreateContainer(r.Context(), image, version)
 	if err != nil {
-		log.Println(err)
-		http.Redirect(w, r, "/", 302)
+		error.ShowError(w, err)
+		return
 	}
 
-	// TODO: redirect to details page of container
+	w.Header().Add("HX-Location", "/docker/"+id)
 }
 
 func ContainerStart(w http.ResponseWriter, r *http.Request) {

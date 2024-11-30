@@ -1,12 +1,13 @@
-
 <!DOCTYPE html>
+<script src="../htmx.min.js"></script>
 
 <body>
     <h1>Server manager</h1>
     <h2>New container</h2>
-    <form action="/docker/new" method="post">
-        <input type="text" placeholder="Image" name="image"/>
+    <form hx-post="/docker/new" hx-target="#result-div" hx-swap="outerHTML">
+        <input type="text" placeholder="Image" name="image" required/>
         <input type="text" placeholder="Version" name="version" required/>
-        <input type="submit" value="Create" />
+        <input type="submit" value="Create"/>
     </form>
+    <div id="result-div"></div>
 </body>
