@@ -7,9 +7,6 @@
     <h2>Container Details</h2>
     <div hx-get="/docker/{{.}}/containerDetails" hx-trigger="load, every 5s"></div>
 
-    <h2>Logs</h2>
-    <div hx-ext="sse" sse-connect="/docker/{{.}}/logs" sse-swap="LogEvent" hx-swap="beforeend"></div>
-
     <h2>Actions</h2>
     <div>
         <button hx-post="/docker/{{.}}/start" hx-target="#result-div" hx-swap="outerHTML">Start</button>
@@ -17,4 +14,10 @@
         <button hx-post="/docker/{{.}}/remove" hx-target="#result-div" hx-swap="outerHTML">Remove</button>
     </div>
     <div id="result-div"></div>
+
+    <h2>Logs</h2>
+    <div hx-ext="sse" sse-connect="/docker/{{.}}/logs">
+        <div sse-swap="message" hx-swap="beforeend"></div>
+    </div>
+
 </body>

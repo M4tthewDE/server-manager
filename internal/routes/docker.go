@@ -130,13 +130,13 @@ func ContainerLogs(w http.ResponseWriter, r *http.Request) {
 			return
 		case msg := <-logsChannel:
 			if msg.Error != nil {
-				_, err := fmt.Fprintf(w, "event: ErrorEvent\ndata: <span>Error: %s</span>\n\n", msg.Error.Error())
+				_, err := fmt.Fprintf(w, "data: <br><span>Error: %s</span>\n\n", msg.Error.Error())
 				if err != nil {
 					log.Println(err)
 					return
 				}
 			} else {
-				_, err := fmt.Fprintf(w, "event: LogEvent\ndata: <br><span>%s</span>\n\n", msg.Text)
+				_, err := fmt.Fprintf(w, "data: <br><span>%s</span>\n\n", msg.Text)
 				if err != nil {
 					log.Println(err)
 					return
