@@ -18,6 +18,7 @@ func Run() error {
 	http.HandleFunc("POST /docker/{id}/start", routes.ContainerStart)
 	http.HandleFunc("POST /docker/{id}/stop", routes.ContainerStop)
 	http.HandleFunc("POST /docker/{id}/remove", routes.ContainerRemove)
+	http.HandleFunc("/docker/{id}/logs", routes.ContainerLogs)
 
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fs)

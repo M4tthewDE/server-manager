@@ -2,6 +2,7 @@ package routes
 
 import (
 	"errors"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -108,4 +109,45 @@ func ContainerRemove(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("HX-Location", "/")
+}
+
+func ContainerLogs(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+
+	clientGone := r.Context().Done()
+	rc := http.NewResponseController(w)
+
+	logsChannel := make(chan docker.LogMessage)
+	go docker.StreamLogs(r.Context(), id, logsChannel)
+
+	for {
+		select {
+		case <-clientGone:
+			return
+		case msg := <-logsChannel:
+			if msg.Error != nil {
+				_, err := fmt.Fprintf(w, "event: ErrorEvent\ndata: <span>Error: %s</span>\n\n", msg.Error.Error())
+				if err != nil {
+					log.Println(err)
+					return
+				}
+			} else {
+				_, err := fmt.Fprintf(w, "event: LogEvent\ndata: <br><span>%s</span>\n\n", msg.Text)
+				if err != nil {
+					log.Println(err)
+					return
+				}
+			}
+
+			err := rc.Flush()
+			if err != nil {
+				log.Println(err)
+				return
+			}
+		}
+	}
 }

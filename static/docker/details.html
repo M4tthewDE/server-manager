@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <script src="../htmx.min.js"></script>
+<script src="https://unpkg.com/htmx-ext-sse@2.2.2/sse.js"></script>
 
 <body>
     <h1>Server Manager</h1>
     <h2>Container Details</h2>
     <div hx-get="/docker/{{.}}/containerDetails" hx-trigger="load, every 5s"></div>
+
+    <h2>Logs</h2>
+    <div hx-ext="sse" sse-connect="/docker/{{.}}/logs" sse-swap="LogEvent" hx-swap="beforeend"></div>
+
     <h2>Actions</h2>
     <div>
         <button hx-post="/docker/{{.}}/start" hx-target="#result-div" hx-swap="outerHTML">Start</button>

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -163,4 +164,49 @@ func RemoveContainer(ctx context.Context, id string) error {
 	defer cli.Close()
 
 	return cli.ContainerRemove(ctx, id, container.RemoveOptions{})
+}
+
+type LogMessage struct {
+	Error error
+	Text  string
+}
+
+func StreamLogs(ctx context.Context, id string, logChannel chan LogMessage) {
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		log.Println(err)
+		logChannel <- LogMessage{Error: err, Text: ""}
+		return
+	}
+
+	defer cli.Close()
+
+	reader, err := cli.ContainerLogs(ctx, id, container.LogsOptions{
+		ShowStdout: true,
+		ShowStderr: true,
+		Timestamps: false,
+		Follow:     true,
+		Tail:       "40",
+	})
+
+	if err != nil {
+		log.Println(err)
+		logChannel <- LogMessage{Error: err, Text: ""}
+		return
+	}
+
+	defer reader.Close()
+
+	buffer := make([]byte, 1024)
+
+	for {
+		n, err := reader.Read(buffer)
+		if err != nil {
+			logChannel <- LogMessage{Error: err, Text: ""}
+			return
+		}
+
+		text := string(buffer[:n])
+		logChannel <- LogMessage{Error: nil, Text: text}
+	}
 }
